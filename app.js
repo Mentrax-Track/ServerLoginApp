@@ -5,6 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var socket = require("socket.io");
+
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
@@ -56,5 +58,17 @@ app.use(function(err, req, res, next) {
   });
 });
 
+var PORT = 9000;
+var http=app.listen(PORT,function(){
+  console.log("Reading... Login... " + PORT);
+});
+
+var io= socket(http);
+io.on("connection",function(socket){
+  socket.on("msn",function(usermsn){
+      console.log(usermsn);
+      io.sockets.emit("Response",{"server":usermsn+".."})
+  });
+});
 
 module.exports = app;
